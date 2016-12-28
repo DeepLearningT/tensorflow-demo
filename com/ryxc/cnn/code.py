@@ -29,6 +29,7 @@ def conv2d(x, W):
 
 # 为了防止跨步太大，图片信息都是太多。中间加了一个pooling的处理，将跨度减小，然后用pooling处理的时候将跨度变大的
 # 用pooling处理的跨度大的，这里的处理可以保留更多的图片信息
+# 需要把2x2窗子里面那个最大的拿走
 def max_pool_2x2(x):
     # 在pooling的阶段把长和宽减小了
     return tf.nn.max_pool(x, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
@@ -40,13 +41,13 @@ keep_prob = tf.placeholder(tf.float32)
 x_image = tf.reshape(xs, [-1, 28, 28, 1])  # -1表示所有的sample  1表示图片的厚度(黑白厚度为1个单位，彩色GRB为3)
 
 ## conv1 layer ##
-W_conv1 = weight_variable([5, 5, 1, 32])  # path 5X5， in size(图片厚度)1， out size(高度) 32
+W_conv1 = weight_variable([5, 5, 1, 32])  # patch 5X5， in size(图片厚度)1， out size(高度) 32
 b_conv1 = bias_variable([32])  # 高度32
 # relu 激励函数转为非线性
 h_conv1 = tf.nn.relu(conv2d(x_image, W_conv1) + b_conv1)  # output size 28x28x32 (SAMPLE)
 h_pool1 = max_pool_2x2(h_conv1)                           # output size 14x14x32 (跨步为2)
 ## conv2 layer ##
-W_conv2 = weight_variable([5, 5, 32, 64])  # path 5X5, in size 32, out size 64
+W_conv2 = weight_variable([5, 5, 32, 64])  # path 5X5, in size 32, out size 64 特征
 b_conv2 = bias_variable([64])
 h_conv2 = tf.nn.relu(conv2d(h_pool1, W_conv2) + b_conv2)  # output size 14x14x64
 h_pool2 = max_pool_2x2(h_conv2)                           # output size 7x7x64
@@ -59,6 +60,7 @@ h_fc1 = tf.nn.relu(tf.matmul(h_pool2_flat, W_fc1) + b_fc1)
 h_fc1_drop = tf.nn.dropout(h_fc1, keep_prob)
 
 ## func2 layer ##
+# 输出为10，输出的每一维都是图片属于该类别的概率。
 W_fc2 = weight_variable([1024, 10])
 b_fc2 = bias_variable([10])
 prediction = tf.nn.softmax(tf.matmul(h_fc1_drop, W_fc2) + b_fc2)  # softmax 计算概率
