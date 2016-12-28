@@ -86,12 +86,7 @@ print("Train/Test split:{:d}/{:d}".format(len(x_train), len(x_test)))
 # ============================================================================
 print("embedding_size:", FLAGS.embedding_dim)
 
-session_conf = tf.ConfigProto(
-  allow_soft_placement=FLAGS.allow_soft_placement,
-  log_device_placement=FLAGS.log_device_placement)
-sess = tf.Session(config=session_conf)
-
-sess.run(tf.global_variables_initializer())
+sess = tf.Session()
 
 cnn = TextCNN(sequence_length=x_train.shape[1],
               num_classes=y_train.shape[1],
@@ -101,18 +96,23 @@ cnn = TextCNN(sequence_length=x_train.shape[1],
               num_filters=FLAGS.num_filters,
               l2_reg_lambda=FLAGS.l2_reg_lambda)
 
+
+
 # adamOptimizer 学习效率是0.0001
 train_step = tf.train.AdamOptimizer(1e-4).minimize(cnn.loss)
 
 # Generate batches
 batches = data_helpers.batch_iter(list(zip(x_train, y_train)), FLAGS.batch_size, FLAGS.num_epochs)
 
+sess.run(tf.global_variables_initializer())
+
 for batch in batches:
     x_batch, y_batch = zip(*batch)
-    sess.run(train_step, feed_dict={cnn.input_x: x_batch, cnn.input_y: y_batch, cnn.dropout_keep_prob:
-        FLAGS.dropout_keep_prob})
-    print("----")
-    # print(cnn.accuracy)
+    feed_dict={cnn.input_x: x_batch, cnn.input_y: y_batch, cnn.dropout_keep_prob:
+        FLAGS.dropout_keep_prob}
+    sess.run(train_step, feed_dict=feed_dict)
+    result = sess.run(cnn.accuracy, feed_dict=feed_dict)
+    print(result)
 
 
 

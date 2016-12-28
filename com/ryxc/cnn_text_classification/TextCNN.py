@@ -49,12 +49,11 @@ class TextCNN(object):
         l2_loss = tf.constant(0.0)
 
         # random_uniform返回形状为shape的tensor，其中的元素服从minval和maxval之间的均匀分布
-        with tf.device('/cpu:0'):
-            W = tf.Variable(tf.random_uniform([vocab_size, embedding_size], -1.0, 1.0))   # 18758x128
-            # 需要对批数据中的单词建立嵌套向量 根据input_x中的id，寻找W中的对应元素。
-            # 比如，input_x=[1,3,5]，则找出W中下标为1,3,5的向量组成一个矩阵返回。
-            self.embedded_chars = tf.nn.embedding_lookup(W, self.input_x)  # ?x56x128  image:56x128
-            self.embedded_chars_expanded = tf.expand_dims(self.embedded_chars, -1)  # ?x56x128x1 在 tensor的最后 插入1维
+        Weight = tf.Variable(tf.random_uniform([vocab_size, embedding_size], -1.0, 1.0))  # 18758x128
+        # 需要对批数据中的单词建立嵌套向量 根据input_x中的id，寻找W中的对应元素。
+        # 比如，input_x=[1,3,5]，则找出W中下标为1,3,5的向量组成一个矩阵返回。
+        self.embedded_chars = tf.nn.embedding_lookup(Weight, self.input_x)  # ?x56x128  image:56x128
+        self.embedded_chars_expanded = tf.expand_dims(self.embedded_chars, -1)  # ?x56x128x1 在 tensor的最后 插入1维
 
         # 循环创建滤波器（一个滤波器包括一个卷积层和一个池化层）
         pooled_outputs = []
