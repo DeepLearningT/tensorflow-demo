@@ -97,9 +97,12 @@ cnn = TextCNN(sequence_length=x_train.shape[1],
               l2_reg_lambda=FLAGS.l2_reg_lambda)
 
 
+# Define Training procedure
+global_step = tf.Variable(0, name="global_step", trainable=False)
+optimizer = tf.train.AdamOptimizer(1e-3)
+grads_and_vars = optimizer.compute_gradients(cnn.loss)
+train_op = optimizer.apply_gradients(grads_and_vars, global_step=global_step)
 
-# adamOptimizer 学习效率是0.0001
-train_step = tf.train.AdamOptimizer(1e-4).minimize(cnn.loss)
 
 # Generate batches
 batches = data_helpers.batch_iter(list(zip(x_train, y_train)), FLAGS.batch_size, FLAGS.num_epochs)
@@ -110,7 +113,7 @@ for batch in batches:
     x_batch, y_batch = zip(*batch)
     feed_dict={cnn.input_x: x_batch, cnn.input_y: y_batch, cnn.dropout_keep_prob:
         FLAGS.dropout_keep_prob}
-    sess.run(train_step, feed_dict=feed_dict)
+    sess.run(train_op, feed_dict=feed_dict)
     result = sess.run(cnn.accuracy, feed_dict=feed_dict)
     print(result)
 
