@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 import datetime
 import os
-import site
 
 import numpy as np
 import tensorflow as tf
