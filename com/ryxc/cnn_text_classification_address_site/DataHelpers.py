@@ -1,10 +1,8 @@
 # __author__ = 'tonye0115'
 # -*- coding: utf-8 -*-
-import json
 import os
 import re
 import numpy as np
-
 
 
 def splitWord(examples):
@@ -16,8 +14,6 @@ def splitWord(examples):
             tmp +=(s+"\t")
         x_text.append(tmp)
     return x_text
-
-
 
 
 def load_data_and_labels(data_path):
