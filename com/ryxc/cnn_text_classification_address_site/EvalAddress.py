@@ -24,8 +24,9 @@ print("")
 
 
 x_raw = ["广东省	珠海市	香洲区	翠香街道翠香街道人民東路600號寶地花園"]
-x_raw = DataHelpers.splitWord(x_raw)
 print("x_raw:", x_raw)
+x_raw = DataHelpers.splitWord(x_raw)
+
 # 将数据映射词汇表
 vocab_path = os.path.join(FLAGS.checkpoint_dir, "..", "vocab")
 vocab_processor = learn.preprocessing.VocabularyProcessor.restore(vocab_path)
