@@ -36,7 +36,7 @@ class TextCNN(object):
     embedding_size: 128
     filter_sizes: 3  3,4,5
     num_filters: 128
-    l2_reg_lambda:
+    l2_reg_lambda: 0.0
     '''
     def __init__(self, sequence_length, num_classes, vocab_size, embedding_size, filter_sizes, num_filters,
                  l2_reg_lambda):
