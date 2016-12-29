@@ -92,13 +92,16 @@ class TextCNN(object):
         self.h_drop = tf.nn.dropout(self.h_pool_flat, self.dropout_keep_prob)
 
         # output 分数和预测
-        W = tf.get_variable("W", shape=[num_filters_total, num_classes],
-                            initializer=tf.contrib.layers.xavier_initializer())
-        b = tf.Variable(tf.constant(0.1, shape=[num_classes]))
-        l2_loss += tf.nn.l2_loss(W)  #  计算L2范数的一半张量没有 开根号
-        l2_loss += tf.nn.l2_loss(b)
-        self.scores = tf.nn.xw_plus_b(self.h_drop, W, b)
-        self.predictions = tf.argmax(self.scores, 1)
+        with tf.name_scope("output"):
+            W = tf.get_variable("W", shape=[num_filters_total, num_classes],
+                                initializer=tf.contrib.layers.xavier_initializer())
+            b = tf.Variable(tf.constant(0.1, shape=[num_classes]))
+            l2_loss += tf.nn.l2_loss(W)  #  计算L2范数的一半张量没有 开根号
+            l2_loss += tf.nn.l2_loss(b)
+            self.scores = tf.nn.xw_plus_b(self.h_drop, W, b)
+            # 返回索引值最大的跨维度的张量
+            self.predictions = tf.argmax(self.scores, 1, name="predictions")
+
 
         # 计算平均 cross-entropy loss
         losses = tf.nn.softmax_cross_entropy_with_logits(self.scores, self.input_y)
