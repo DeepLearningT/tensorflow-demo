@@ -4,11 +4,14 @@ import os
 
 import tensorflow as tf
 import time
+import datetime
 
 from com.ryxc.cnn_text_classification.TextCNN import TextCNN
 from com.ryxc.cnn_text_classification import data_helpers
 from tensorflow.contrib import learn
 import numpy as np
+
+
 
 # Data loading params
 tf.flags.DEFINE_float("test_sample_percentage", .1, "Percentage of the training data to use for validation")
@@ -18,6 +21,8 @@ tf.flags.DEFINE_string("negative_data_file", "./data/rt-polaritydata/rt-polarity
 # Training parameters
 tf.flags.DEFINE_integer("batch_size", 64, "Batch Size (default: 64)")
 tf.flags.DEFINE_integer("num_epochs", 200, "Number of training epochs (default: 200)")
+tf.flags.DEFINE_integer("evaluate_every", 100, "Evaluate model on dev set after this many steps (default: 100)")
+tf.flags.DEFINE_integer("checkpoint_every", 100, "Save model after this many steps (default: 100)")
 
 # Model Hyperparameters
 tf.flags.DEFINE_integer("embedding_dim", 128, "Dimensionality of character embedding (default: 128)")
@@ -29,7 +34,6 @@ tf.flags.DEFINE_float("dropout_keep_prob", 0.5, "Dropout keep probability (defau
 # Misc Parameters
 tf.flags.DEFINE_boolean("allow_soft_placement", True, "Allow device soft device placement")
 tf.flags.DEFINE_boolean("log_device_placement", False, "Log placement of ops on devices")
-
 
 FLAGS = tf.flags.FLAGS
 FLAGS._parse_flags()
@@ -83,11 +87,10 @@ print("Train/Test split:{:d}/{:d}".format(len(x_train), len(x_test)))
 
 
 # Training
-# ============================================================================
-print("embedding_size:", FLAGS.embedding_dim)
+print("============================================================================")
+print("Training starting...........")
 
 sess = tf.Session()
-
 cnn = TextCNN(sequence_length=x_train.shape[1],
               num_classes=y_train.shape[1],
               vocab_size=len(vocab_processor.vocabulary_),
@@ -103,19 +106,58 @@ optimizer = tf.train.AdamOptimizer(1e-3)
 grads_and_vars = optimizer.compute_gradients(cnn.loss)
 train_op = optimizer.apply_gradients(grads_and_vars, global_step=global_step)
 
+# Output directory for models and summaries
+timestamp = str(int(time.time()))
+out_dir = os.path.abspath(os.path.join(os.path.curdir, "runs", timestamp))
+# print("Writing to {}\n".format(out_dir))
+
+# Checkpoint directory. Tensorflow assumes this directory already exists so we need to create it
+checkpoint_dir = os.path.abspath(os.path.join(out_dir, "checkpoints"))
+checkpoint_prefix = os.path.join(checkpoint_dir, "model")
+if not os.path.exists(checkpoint_dir):
+    os.makedirs(checkpoint_dir)
+saver = tf.train.Saver(tf.global_variables())
 
 # Generate batches
 batches = data_helpers.batch_iter(list(zip(x_train, y_train)), FLAGS.batch_size, FLAGS.num_epochs)
 
 sess.run(tf.global_variables_initializer())
 
+
+def train_step(x_batch, y_batch):
+    feed_dict = {
+                cnn.input_x: x_batch,
+                cnn.input_y: y_batch,
+                cnn.dropout_keep_prob:FLAGS.dropout_keep_prob
+            }
+    _, step, loss, accuracy = sess.run([train_op, global_step, cnn.loss, cnn.accuracy], feed_dict=feed_dict)
+    time_str = datetime.datetime.now().isoformat()
+    # print("{}: step {}, loss {:g}, acc {:g}".format(time_str, step, loss, accuracy))
+
+
+def dev_step(x_batch, y_batch):
+    feed_dict = {
+              cnn.input_x: x_batch,
+              cnn.input_y: y_batch,
+              cnn.dropout_keep_prob: 1.0
+            }
+    step, loss, accuracy = sess.run([global_step, cnn.loss, cnn.accuracy], feed_dict)
+    time_str = datetime.datetime.now().isoformat()
+    print("{}: step {}, loss {:g}, acc {:g}".format(time_str, step, loss, accuracy))
+
 for batch in batches:
     x_batch, y_batch = zip(*batch)
-    feed_dict={cnn.input_x: x_batch, cnn.input_y: y_batch, cnn.dropout_keep_prob:
-        FLAGS.dropout_keep_prob}
-    sess.run(train_op, feed_dict=feed_dict)
-    result = sess.run(cnn.accuracy, feed_dict=feed_dict)
-    print(result)
+
+    train_step(x_batch, y_batch)
+
+    current_step = tf.train.global_step(sess, global_step)
+    if current_step % FLAGS.evaluate_every == 0:
+        print("\nEvaluation:")
+        dev_step(x_batch, y_batch)
+    if current_step % FLAGS.checkpoint_every == 0:
+        path = saver.save(sess, checkpoint_prefix, global_step=current_step)
+        print("Saved model checkpoint to{}\n".format(path))
+
 
 
 
