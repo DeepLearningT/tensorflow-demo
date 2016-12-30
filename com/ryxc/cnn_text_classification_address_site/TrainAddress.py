@@ -78,10 +78,11 @@ print("shuffle_indices", shuffle_indices)
 print("-------------------------------------- Split tran/test set-----------------------------------------")
 test_sample_index = -1 * int(FLAGS.test_sample_percentage * float(len(y)))
 print("len(y):", len(y))
-print("dev_sample_index:", test_sample_index)
+print("test_sample_index:", test_sample_index)
 x_train, x_test = x_shuffle[:test_sample_index], x_shuffle[test_sample_index:]
 y_train, y_text = y_shuffle[:test_sample_index], y_shuffle[test_sample_index:]
-print("Train/Test split:{:d}/{:d}".format(len(x_train), len(x_test)))
+print("x_train/x_test split:{:d}/{:d}".format(len(x_train), len(x_test)))
+print("y_train/y_text split:{:d}/{:d}".format(len(y_train), len(y_text)))
 
 
 # Training

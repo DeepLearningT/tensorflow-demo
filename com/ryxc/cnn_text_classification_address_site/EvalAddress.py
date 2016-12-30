@@ -9,7 +9,7 @@ from com.ryxc.cnn_text_classification_address_site import DataHelpers
 
 # Eval Parameters
 tf.flags.DEFINE_integer("batch_size", 64, "Batch Size (default: 64)")
-tf.flags.DEFINE_string("checkpoint_dir", "./runs/1482999381/checkpoints/", "Checkpoint directory from training run")
+tf.flags.DEFINE_string("checkpoint_dir", "./runs/1483060848/checkpoints/", "Checkpoint directory from training run")
 
 # Misc Parameters
 tf.flags.DEFINE_boolean("allow_soft_placement", True, "Allow device soft device placement")
@@ -23,7 +23,7 @@ for attr, value in sorted(FLAGS.__flags.items()):
 print("")
 
 
-x_raw = ["广东省	珠海市	香洲区	翠香街道翠香街道人民東路600號寶地花園"]
+x_raw = ["观珠镇西新北街广东省	电白县 茂名市	电白县	广东省茂名市"]
 print("x_raw:", x_raw)
 x_raw = DataHelpers.splitWord(x_raw)
 
