@@ -5,7 +5,6 @@ import re
 import numpy as np
 
 
-
 def splitWord(examples):
     x_text = []
     examples = [clean_str(s) for s in examples]
@@ -15,8 +14,6 @@ def splitWord(examples):
             tmp +=(s+"\t")
         x_text.append(tmp)
     return x_text
-
-
 
 
 def load_data_and_labels(data_path):

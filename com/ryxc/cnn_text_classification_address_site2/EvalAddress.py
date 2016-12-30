@@ -9,7 +9,7 @@ from com.ryxc.cnn_text_classification_address_site2 import DataHelpers
 
 # Eval Parameters
 tf.flags.DEFINE_integer("batch_size", 64, "Batch Size (default: 64)")
-tf.flags.DEFINE_string("checkpoint_dir", "./runs/1483000490/checkpoints/", "Checkpoint directory from training run")
+tf.flags.DEFINE_string("checkpoint_dir", "./runs/1483060848/checkpoints/", "Checkpoint directory from training run")
 
 # Misc Parameters
 tf.flags.DEFINE_boolean("allow_soft_placement", True, "Allow device soft device placement")
