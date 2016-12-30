@@ -7,9 +7,11 @@ import tensorflow as tf
 from tensorflow.contrib import learn
 from com.ryxc.cnn_text_classification_address_site2 import DataHelpers
 
+
 # Eval Parameters
 tf.flags.DEFINE_integer("batch_size", 64, "Batch Size (default: 64)")
-tf.flags.DEFINE_string("checkpoint_dir", "./runs/1483060848/checkpoints/", "Checkpoint directory from training run")
+tf.flags.DEFINE_string("checkpoint_dir", "./runs/1483062513/checkpoints/", "Checkpoint directory from training run")
+tf.flags.DEFINE_string("data_path", "./data/", "地址-网店数据文件目录")
 
 # Misc Parameters
 tf.flags.DEFINE_boolean("allow_soft_placement", True, "Allow device soft device placement")
@@ -64,7 +66,8 @@ with graph.as_default():
 
         for x_test_batch in batches:
             batch_predictions = sess.run(predictions, {input_x: x_test_batch, dropout_keep_prob: 1.0})
+            print("batch_predictions:", DataHelpers.findSite(FLAGS.data_path, batch_predictions[0]))
+
             all_predictions = np.concatenate([all_predictions, batch_predictions])
-            print("predictions:", all_predictions)
 
 

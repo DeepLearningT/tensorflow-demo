@@ -5,6 +5,25 @@ import re
 import numpy as np
 
 
+def findSite(data_path, index):
+    """
+    根据索引返回网店site
+    :param data_path:
+    :param index:
+    :return:
+    """
+    files = os.listdir(data_path)
+    site = ""
+    for i, file in enumerate(files):
+        if index == i:
+            site = os.path.splitext(file)[len(os.path.splitext(file))-1][1:]
+            break
+        else:
+            site = "none"
+    return site
+
+
+
 def splitWord(examples):
     x_text = []
     examples = [clean_str(s) for s in examples]
@@ -34,8 +53,6 @@ def load_data_and_labels(data_path):
         arr = np.zeros(len(files))
         arr[i] = 1
         labels.append([arr for _ in examples])
-
-
     y = np.concatenate(labels)
     print("x_text:", x_text)
     print("y:", y)
@@ -76,17 +93,4 @@ def batch_iter(data, batch_size, num_epochs, shuffle=True):
 
 
 if __name__ == '__main__':
-    a = "for 我 more than two decades mr . ";
-    print(a)
-
-    zeros = np.zeros(2, np.int64)
-    print(zeros)
-
-    a = [1,2,3,4,5]
-    print(a[:-2])
-    print(a[-2:])
-
-
-
-
-
+    print(findSite("data", 1))
