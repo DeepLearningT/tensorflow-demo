@@ -38,8 +38,7 @@ def splitWord(examples):
 def load_data_and_labels(data_path):
     """
     从文件加载数据,将数据分为词汇和生成标签。返回分割句子和标签
-    :param postive_data_file:
-    :param negative_data_file:
+    :param data_path:
     :return:
     """
     files = os.listdir(data_path)
@@ -54,9 +53,32 @@ def load_data_and_labels(data_path):
         arr[i] = 1
         labels.append([arr for _ in examples])
     y = np.concatenate(labels)
-    print("x_text:", x_text)
-    print("y:", y)
+    print("DataHelpers-log-x_text:", x_text)
+    print("DataHelpers-log-.y:", y)
     return [x_text, y]
+
+
+def load_data_and_labels_eval(data_path):
+    """
+    从文件加载数据,将数据分为词汇和生成标签。返回分割句子和标签
+    :param data_path:
+    :return:
+    """
+    files = os.listdir(data_path)
+    x_text = []
+    labels = []
+    for i, file in enumerate(files):
+        print(file)
+        fullname = os.path.join(data_path, file)
+        examples = list(open(fullname, 'r', encoding='utf-8').readlines())
+        x_text.extend(splitWord(examples))
+        site = findSite(data_path, i)
+        labels.append([site for _ in examples])
+    y = np.concatenate(labels)
+    print("DataHelpers-log-x_text:", x_text)
+    print("DataHelpers-log-.y:", y)
+    return [x_text, y]
+
 
 def clean_str(string):
     """

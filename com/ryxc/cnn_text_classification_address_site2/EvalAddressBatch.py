@@ -12,6 +12,8 @@ from com.ryxc.cnn_text_classification_address_site2 import DataHelpers
 tf.flags.DEFINE_integer("batch_size", 64, "Batch Size (default: 64)")
 tf.flags.DEFINE_string("checkpoint_dir", "./runs/1483068015/checkpoints/", "Checkpoint directory from training run")
 tf.flags.DEFINE_string("data_path", "./data/", "地址-网店数据文件目录")
+tf.flags.DEFINE_string("eval_path", "./eval/", "评估地址-网店数据文件目录")
+tf.flags.DEFINE_boolean("eval_train", True, "评估批量地址预测")
 
 # Misc Parameters
 tf.flags.DEFINE_boolean("allow_soft_placement", True, "Allow device soft device placement")
@@ -24,10 +26,14 @@ for attr, value in sorted(FLAGS.__flags.items()):
     print("{}={}".format(attr.upper(), value))
 print("")
 
-
-x_raw = ["江苏省	南京市	雨花台区	雨花街道雨花街道软件大道19号"]
-print("x_raw:", x_raw)
-x_raw = DataHelpers.splitWord(x_raw)
+# 数据准备
+if FLAGS.eval_train:  # 批量测试
+    print("Loading data...")
+    x_raw, y = DataHelpers.load_data_and_labels_eval(FLAGS.eval_path)
+else:  # 单个测试
+    x_raw = ["江苏省	南京市	雨花台区	雨花街道雨花街道软件大道19号"]
+    print("地址:", x_raw)
+    x_raw = DataHelpers.splitWord(x_raw)
 
 # 将数据映射词汇表
 vocab_path = os.path.join(FLAGS.checkpoint_dir, "..", "vocab")
@@ -66,8 +72,14 @@ with graph.as_default():
 
         for x_test_batch in batches:
             batch_predictions = sess.run(predictions, {input_x: x_test_batch, dropout_keep_prob: 1.0})
-            print("batch_predictions:", DataHelpers.findSite(FLAGS.data_path, batch_predictions[0]))
-
+            if ~ FLAGS.eval_train:
+                print("batch_predictions:", DataHelpers.findSite(FLAGS.data_path, batch_predictions[0]))
             all_predictions = np.concatenate([all_predictions, batch_predictions])
+            all_predictions = [DataHelpers.findSite(FLAGS.data_path, s) for s in all_predictions]
+            print("all_predictions:", all_predictions)
 
+if FLAGS.eval_train:
+     correct_predictions = float(sum(all_predictions == y))
+     print("测试样本数量: {}".format(len(y)))
+     print("准确率: {:g}".format(correct_predictions/float(len(y))))
 
