@@ -113,6 +113,36 @@ def batch_iter(data, batch_size, num_epochs, shuffle=True):
             yield shuffled_data[start_index:end_index]
 
 
+def writeFile(filePath, status):
+    if os.path.isfile(filePath):
+        os.remove(filePath)
+    f = open(filePath, 'w+')
+    f.write(status)
+    f.close
+
+
+def readFile(filePath):
+    if os.path.isfile(filePath):
+       status = open(filePath, 'r').read()
+    return status
+
+
+def getModelPath(filePath):
+    '''
+    获取最新的模型文件
+    1.如果最新的模型在训练，返回倒数第二个模型目录
+    2.如果最新的模型已经训练完成，返回最新的模型目录
+    :return:模型目录
+    '''
+    files = os.listdir(filePath)
+    status = readFile(filePath + "/train_status")
+    if status == 'ending':
+        return files[-2]
+    else:
+        return files[-3]
+
+
+
 
 if __name__ == '__main__':
     print(findSite("data", 1))

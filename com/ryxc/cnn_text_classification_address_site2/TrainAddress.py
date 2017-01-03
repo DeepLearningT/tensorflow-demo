@@ -12,7 +12,8 @@ from com.ryxc.cnn_text_classification_address_site2 import DataHelpers
 
 # Data loading params
 tf.flags.DEFINE_float("test_sample_percentage", .3, "Percentage of the training data to use for validation")
-tf.flags.DEFINE_string("data_path", "./data/", "地址-网店数据文件目录")
+tf.flags.DEFINE_string("data_path", "data", "地址-网店数据文件目录")
+tf.flags.DEFINE_string("runs_path", "runs", "模型存储目录")
 
 # Training parameters
 tf.flags.DEFINE_integer("batch_size", 64, "Batch Size (default: 64)")
@@ -115,7 +116,7 @@ with tf.Graph().as_default():
 
     # Output directory for models and summaries
     timestamp = str(int(time.time()))
-    out_dir = os.path.abspath(os.path.join(os.path.curdir, "runs", timestamp))
+    out_dir = os.path.abspath(os.path.join(os.path.curdir, FLAGS.runs_path, timestamp))
     # print("Writing to {}\n".format(out_dir))
 
     # Checkpoint directory. Tensorflow assumes this directory already exists so we need to create it
@@ -155,6 +156,8 @@ with tf.Graph().as_default():
         time_str = datetime.datetime.now().isoformat()
         print("{}: step {}, loss {:g}, acc {:g}".format(time_str, step, loss, accuracy))
 
+    DataHelpers.writeFile(FLAGS.runs_path+'/train_status', 'running')
+
     for batch in batches:
         x_batch, y_batch = zip(*batch)
 
@@ -167,3 +170,7 @@ with tf.Graph().as_default():
         if current_step % FLAGS.checkpoint_every == 0:
             path = saver.save(sess, checkpoint_prefix, global_step=current_step)
             print("Saved model checkpoint to{}\n".format(path))
+
+    DataHelpers.writeFile(FLAGS.runs_path+'/train_status', 'ending')
+
+
