@@ -106,8 +106,11 @@ with tf.Graph().as_default():
 
     # Define Training procedure
     global_step = tf.Variable(0, name="global_step", trainable=False)
+    # Adam 适应性动量估计法 是另一种能对不同参数计算适应性学习率的方法
     optimizer = tf.train.AdamOptimizer(1e-3)
+    # 根据loss损失的变量值计算梯度变量
     grads_and_vars = optimizer.compute_gradients(cnn.loss)
+    # 定义训练器
     train_op = optimizer.apply_gradients(grads_and_vars, global_step=global_step)
 
     # Output directory for models and summaries

@@ -10,10 +10,10 @@ from com.ryxc.cnn_text_classification_address_site2 import DataHelpers
 
 # Eval Parameters
 tf.flags.DEFINE_integer("batch_size", 64, "Batch Size (default: 64)")
-tf.flags.DEFINE_string("checkpoint_dir", "./runs/1483068015/checkpoints/", "Checkpoint directory from training run")
+tf.flags.DEFINE_string("checkpoint_dir", "./runs/1483403474/checkpoints/", "Checkpoint directory from training run")
 tf.flags.DEFINE_string("data_path", "./data/", "地址-网店数据文件目录")
 tf.flags.DEFINE_string("eval_path", "./eval/", "评估地址-网店数据文件目录")
-tf.flags.DEFINE_boolean("eval_train", True, "评估批量地址预测")
+tf.flags.DEFINE_boolean("eval_train", False, "评估批量地址预测")
 
 # Misc Parameters
 tf.flags.DEFINE_boolean("allow_soft_placement", True, "Allow device soft device placement")
@@ -31,7 +31,7 @@ if FLAGS.eval_train:  # 批量测试
     print("Loading data...")
     x_raw, y = DataHelpers.load_data_and_labels_eval(FLAGS.eval_path)
 else:  # 单个测试
-    x_raw = ["江苏省	南京市	雨花台区	雨花街道雨花街道软件大道19号"]
+    x_raw = ["花街道软件大道19号江苏省	南京市	雨花台区	雨花街道雨"]
     print("地址:", x_raw)
     x_raw = DataHelpers.splitWord(x_raw)
 

@@ -58,7 +58,8 @@ class TextCNN(object):
         # 循环创建滤波器（一个滤波器包括一个卷积层和一个池化层）
         pooled_outputs = []
         for i, filter_size in enumerate(filter_sizes):
-            # 创建卷积层
+            # 创建卷积层 卷积层的特点就是，通过卷积运算，可以使原信号特征增强，并且降低噪音
+            # -个patch大小下的多卷积核 一个卷积核的大小为3x128 使用128个卷积核对1张图片卷积出来128张图片 学习了128种特征
             # 1: patch(3x128)  特征图像 in size:1  out size:128
             # 2: patch(4x128)  特征图像 in size:1  out size:128
             # 3: patch(5x128)  特征图像 in size:1  out size:128
@@ -93,6 +94,7 @@ class TextCNN(object):
 
         # output 分数和预测
         with tf.name_scope("output"):
+            # 输入 384个特征 输出3个（1x3）分类特征
             W = tf.get_variable("W", shape=[num_filters_total, num_classes],
                                 initializer=tf.contrib.layers.xavier_initializer())
             b = tf.Variable(tf.constant(0.1, shape=[num_classes]))
@@ -103,15 +105,13 @@ class TextCNN(object):
             self.predictions = tf.argmax(self.scores, 1, name="predictions")
 
 
-        # 计算平均 cross-entropy loss
+        # 计算loss损失  cross_entropy-交叉熵损失函数
         losses = tf.nn.softmax_cross_entropy_with_logits(self.scores, self.input_y)
         self.loss = tf.reduce_mean(losses) + l2_reg_lambda * l2_loss
 
         # Accuracy 准确度计算
         correct_predictions = tf.equal(self.predictions, tf.argmax(self.input_y, 1))
         self.accuracy = tf.reduce_mean(tf.cast(correct_predictions, "float"))
-
-
 
 
 
