@@ -91,6 +91,7 @@ def clean_str(string):
     string = re.sub(r"\(", "", string)
     string = re.sub(r"\（", "", string)
     string = re.sub(r"\）", "", string)
+    string = re.sub(r"null", "", string)
     return string.strip().lower()
 
 def batch_iter(data, batch_size, num_epochs, shuffle=True):
@@ -148,4 +149,6 @@ def getModelPath(filePath):
 
 
 if __name__ == '__main__':
-    print(findSite("data", 1))
+   #  print(findSite("data", 1))
+    s = "null 浙江"
+    print(clean_str(s))
