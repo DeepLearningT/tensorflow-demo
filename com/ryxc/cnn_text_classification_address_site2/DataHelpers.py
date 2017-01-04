@@ -139,7 +139,10 @@ def getModelPath(filePath):
     if status == 'ending':
         return files[-2]
     else:
-        return files[-3]
+        if len(files) > 2:
+            return files[-3]
+        else:
+            return "模型正则训练....."
 
 
 

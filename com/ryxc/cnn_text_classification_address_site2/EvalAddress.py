@@ -7,9 +7,16 @@ import tensorflow as tf
 from tensorflow.contrib import learn
 from com.ryxc.cnn_text_classification_address_site2 import DataHelpers
 
+path = DataHelpers.getModelPath('runs')
+print(path)
+if not path.isdigit():
+    os._exit(0)
+path = "./runs/"+path+"/checkpoints/"
+print("读取模型目录:", path)
+
 # Eval Parameters
 tf.flags.DEFINE_integer("batch_size", 64, "Batch Size (default: 64)")
-tf.flags.DEFINE_string("checkpoint_dir", "./runs/"+DataHelpers.getModelPath('runs')+"/checkpoints/", "Checkpoint directory from training run")
+tf.flags.DEFINE_string("checkpoint_dir", path, "Checkpoint directory from training run")
 tf.flags.DEFINE_string("data_path", "./data/", "地址-网店数据文件目录")
 
 # Misc Parameters
