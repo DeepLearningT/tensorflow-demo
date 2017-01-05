@@ -51,11 +51,14 @@ def load_data_and_labels(data_path):
         x_text.extend(splitWord(examples))
         arr = np.zeros(len(files))
         arr[i] = 1
-        labels.append([arr for _ in examples])
-    y = np.concatenate(labels)
-    print("DataHelpers-log-x_text:", x_text)
-    print("DataHelpers-log-.y:", y)
-    return [x_text, y]
+        for _ in examples:
+            labels.append(arr)
+        # labels.append([arr for _ in examples])
+    # y = np.concatenate(labels)
+    # print("DataHelpers-log-labels:", labels)
+    # print("DataHelpers-log-x_text:", x_text)
+    # print("DataHelpers-log-.y:", y)
+    return [x_text, np.array(labels)]
 
 
 def load_data_and_labels_eval(data_path):
@@ -75,8 +78,8 @@ def load_data_and_labels_eval(data_path):
         site = findSite(data_path, i)
         labels.append([site for _ in examples])
     y = np.concatenate(labels)
-    print("DataHelpers-log-x_text:", x_text)
-    print("DataHelpers-log-.y:", y)
+    # print("DataHelpers-log-x_text:", x_text)
+    # print("DataHelpers-log-.y:", y)
     return [x_text, y]
 
 
