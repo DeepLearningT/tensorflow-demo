@@ -11,8 +11,8 @@ from com.ryxc.cnn_text_classification_address_site2.TextCNN import TextCNN
 from com.ryxc.cnn_text_classification_address_site2 import DataHelpers
 
 # Data loading params
-tf.flags.DEFINE_float("test_sample_percentage", .3, "Percentage of the training data to use for validation")
-tf.flags.DEFINE_string("data_path", "data", "地址-网店数据文件目录")
+tf.flags.DEFINE_float("test_sample_percentage", .1, "Percentage of the training data to use for validation")
+tf.flags.DEFINE_string("data_path", "data/address-info-suzhou-789", "地址-网店数据文件目录")
 tf.flags.DEFINE_string("runs_path", "runs", "模型存储目录")
 
 # Training parameters
@@ -45,10 +45,11 @@ print(" ")
 # Load data
 print("Loading data...")
 x_text, y = DataHelpers.load_data_and_labels(FLAGS.data_path)
-
+# print("y:", y)
 print("-------------------------------------- Build vocabulary---------------------------------------------")
 max_document_length = max([len(x.split('\t')) for x in x_text])
 print("max_document_length:", max_document_length)
+
 
 vocab_processor = learn.preprocessing.VocabularyProcessor(max_document_length)
 # 计算tf-idf
@@ -59,7 +60,7 @@ fit_transform = vocab_processor.fit_transform(x_text)
 fit_transform_list = list(fit_transform)
 x = np.array(list(fit_transform_list))
 # 文档分词索引集合
-print("x:", x)
+# print("x:", x)
 # 分类变量的词汇类
 print("Vocabulary Size:{:d}".format(len(vocab_processor.vocabulary_)))
 
@@ -74,12 +75,12 @@ np.random.seed(10)  # 设置相同的seed种子值，返回的随机数据是一
 shuffle_indices = np.random.permutation(np.arange(len(y)))
 x_shuffle = x[shuffle_indices]
 y_shuffle = y[shuffle_indices]
-print("shuffle_indices", shuffle_indices)
+# print("shuffle_indices", shuffle_indices)
 
 print("-------------------------------------- Split tran/test set-----------------------------------------")
 test_sample_index = -1 * int(FLAGS.test_sample_percentage * float(len(y)))
-print("len(y):", len(y))
-print("test_sample_index:", test_sample_index)
+# print("len(y):", len(y))
+# print("test_sample_index:", test_sample_index)
 x_train, x_test = x_shuffle[:test_sample_index], x_shuffle[test_sample_index:]
 y_train, y_text = y_shuffle[:test_sample_index], y_shuffle[test_sample_index:]
 print("x_train/x_test split:{:d}/{:d}".format(len(x_train), len(x_test)))

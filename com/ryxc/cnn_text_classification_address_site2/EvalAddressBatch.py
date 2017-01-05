@@ -12,7 +12,7 @@ path = DataHelpers.getModelPath('runs')
 print(path)
 if not path.isdigit():
     os._exit(0)
-path = "./runs/"+path+"/checkpoints/"
+path = "./runs/"+"1483525862"+"/checkpoints/"
 print("读取模型目录:", path)
 
 
@@ -21,7 +21,7 @@ tf.flags.DEFINE_integer("batch_size", 64, "Batch Size (default: 64)")
 tf.flags.DEFINE_string("checkpoint_dir", path, "Checkpoint directory from training run")
 tf.flags.DEFINE_string("data_path", "./data/", "地址-网店数据文件目录")
 tf.flags.DEFINE_string("eval_path", "./eval/", "评估地址-网店数据文件目录")
-tf.flags.DEFINE_boolean("eval_train", True, "评估批量地址预测")
+tf.flags.DEFINE_boolean("eval_train", False, "评估批量地址预测")
 
 # Misc Parameters
 tf.flags.DEFINE_boolean("allow_soft_placement", True, "Allow device soft device placement")
