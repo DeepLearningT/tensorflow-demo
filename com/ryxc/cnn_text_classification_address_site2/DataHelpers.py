@@ -76,11 +76,13 @@ def load_data_and_labels_eval(data_path):
         examples = list(open(fullname, 'r', encoding='utf-8').readlines())
         x_text.extend(splitWord(examples))
         site = findSite(data_path, i)
-        labels.append([site for _ in examples])
-    y = np.concatenate(labels)
+        #labels.append([site for _ in examples])
+        for _ in examples:
+            labels.append(site)
+    # y = np.concatenate(labels)
     # print("DataHelpers-log-x_text:", x_text)
     # print("DataHelpers-log-.y:", y)
-    return [x_text, y]
+    return [x_text, np.array(labels)]
 
 
 def clean_str(string):
