@@ -46,15 +46,22 @@ def load_data_and_labels(data_path):
     labels = []
     for i, file in enumerate(files):
         print(file)
-        fullname = os.path.join(data_path, file)
-        examples = list(open(fullname, 'r', encoding='utf-8').readlines())
-        x_text.extend(splitWord(examples))
+
         arr = np.zeros(len(files))
         arr[i] = 1
-        for _ in examples:
+
+        fullname = os.path.join(data_path, file)
+        readlines = open(fullname, 'r', encoding='utf-8').readlines()
+        examples = []
+        for readline in readlines:
+            split = readline.split("\t")[0:-2]
+            line = ""
+            for _ in split:
+                line += _
+            examples.append(line)
             labels.append(arr)
-        # labels.append([arr for _ in examples])
-    # y = np.concatenate(labels)
+        x_text.extend(splitWord(examples))
+
     # print("DataHelpers-log-labels:", labels)
     # print("DataHelpers-log-x_text:", x_text)
     # print("DataHelpers-log-.y:", y)
@@ -72,14 +79,21 @@ def load_data_and_labels_eval(data_path):
     labels = []
     for i, file in enumerate(files):
         print(file)
-        fullname = os.path.join(data_path, file)
-        examples = list(open(fullname, 'r', encoding='utf-8').readlines())
-        x_text.extend(splitWord(examples))
+
         site = findSite(data_path, i)
-        #labels.append([site for _ in examples])
-        for _ in examples:
+
+        fullname = os.path.join(data_path, file)
+        readlines = open(fullname, 'r', encoding='utf-8').readlines()
+        examples = []
+        for readline in readlines:
+            split = readline.split("\t")[0:-2]
+            line = ""
+            for _ in split:
+                line += _
+            examples.append(line)
             labels.append(site)
-    # y = np.concatenate(labels)
+        x_text.extend(splitWord(examples))
+
     # print("DataHelpers-log-x_text:", x_text)
     # print("DataHelpers-log-.y:", y)
     return [x_text, np.array(labels)]

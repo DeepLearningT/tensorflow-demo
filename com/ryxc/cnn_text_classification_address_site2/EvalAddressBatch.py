@@ -12,17 +12,17 @@ path = DataHelpers.getModelPath('runs')
 print(path)
 # if not path.isdigit():
 #     os._exit(0)
-path = "./runs/"+"1483664980"+"/checkpoints/"
+path = "./runs/"+"1483693439"+"/checkpoints/"
 print("读取模型目录:", path)
 
 
 # Eval Parameters
 tf.flags.DEFINE_integer("batch_size", 64, "Batch Size (default: 64)")
 tf.flags.DEFINE_string("checkpoint_dir", path, "Checkpoint directory from training run")
-tf.flags.DEFINE_string("data_path", "./data/address-info-suzhou-789-sample", "地址-网店数据文件目录")
-#tf.flags.DEFINE_string("data_path", "./data", "地址-网店数据文件目录")
-tf.flags.DEFINE_string("eval_path", "./eval/address-info-10-sample", "评估地址-网店数据文件目录")
-#tf.flags.DEFINE_string("eval_path", "./eval", "评估地址-网店数据文件目录")
+#tf.flags.DEFINE_string("data_path", "./data/address-info-suzhou-789-sample", "地址-网店数据文件目录")
+tf.flags.DEFINE_string("data_path", "./data", "地址-网店数据文件目录")
+#tf.flags.DEFINE_string("eval_path", "./eval/address-info-10-sample", "评估地址-网店数据文件目录")
+tf.flags.DEFINE_string("eval_path", "./eval", "评估地址-网店数据文件目录")
 tf.flags.DEFINE_boolean("eval_train", True, "评估批量地址预测")
 
 # Misc Parameters
