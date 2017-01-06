@@ -11,13 +11,13 @@ from com.ryxc.cnn_text_classification_address_site2 import DataHelpers
 # print(path)
 # if not path.isdigit():
 #     os._exit(0)
-path = "./runs/"+"1483527476"+"/checkpoints/"
+path = "./runs/"+"1483694785"+"/checkpoints/"
 print("读取模型目录:", path)
 
 # Eval Parameters
 tf.flags.DEFINE_integer("batch_size", 64, "Batch Size (default: 64)")
 tf.flags.DEFINE_string("checkpoint_dir", path, "Checkpoint directory from training run")
-tf.flags.DEFINE_string("data_path", "./data/address_temp", "地址-网店数据文件目录")
+tf.flags.DEFINE_string("data_path", "./data", "地址-网店数据文件目录")
 
 # Misc Parameters
 tf.flags.DEFINE_boolean("allow_soft_placement", True, "Allow device soft device placement")
@@ -31,7 +31,7 @@ for attr, value in sorted(FLAGS.__flags.items()):
 print("")
 
 
-x_raw = ["江苏省	苏州市	吴江区	平望镇平望镇江苏省苏州市吴江区平望镇美山子"]
+x_raw = ["江苏省	苏州市	常熟市	招商城佳和水岸12幢117"]
 print("x_raw:", x_raw)
 x_raw = DataHelpers.splitWord(x_raw)
 

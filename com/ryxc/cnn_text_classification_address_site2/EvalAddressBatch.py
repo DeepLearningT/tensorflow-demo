@@ -12,7 +12,7 @@ path = DataHelpers.getModelPath('runs')
 print(path)
 # if not path.isdigit():
 #     os._exit(0)
-path = "./runs/"+"1483693439"+"/checkpoints/"
+path = "./runs/"+"1483694785"+"/checkpoints/"
 print("读取模型目录:", path)
 
 
