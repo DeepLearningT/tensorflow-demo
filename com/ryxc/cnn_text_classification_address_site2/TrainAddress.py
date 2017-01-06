@@ -12,7 +12,7 @@ from com.ryxc.cnn_text_classification_address_site2 import DataHelpers
 
 # Data loading params
 tf.flags.DEFINE_float("test_sample_percentage", .1, "Percentage of the training data to use for validation")
-tf.flags.DEFINE_string("data_path", "data/address-info-suzhou-789", "地址-网店数据文件目录")
+tf.flags.DEFINE_string("data_path", "data/address-info-suzhou-789-sample", "地址-网店数据文件目录")
 tf.flags.DEFINE_string("runs_path", "runs", "模型存储目录")
 
 # Training parameters
